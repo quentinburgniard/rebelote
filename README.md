@@ -1,2 +1,2 @@
 # Rebelote
-## Routine & reminder app
+Routine & reminder app
