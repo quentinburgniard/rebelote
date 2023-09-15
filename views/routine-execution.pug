@@ -1,0 +1,55 @@
+extends layout.pug
+
+block content
+  template(id='step')
+    div(v-show='step.id == $root.step')
+      div(class='ds-title')
+        h1(class="_ds-title title") {{ step.attributes.title }}
+        div(class="_ds-title subtitle") {{ step.attributes.description }}
+      form(class="ds-form" @submit.prevent="nextStep")
+        div(class="_ds-form text" v-if="step.attributes.inputType == 'date'")
+          input(name="value" required type="date")
+        div(class="_ds-form text" v-if="step.attributes.inputType == 'email'")
+          input(autocapitalize="none" name="value" placeholder="contact@quentinburgniard.com" required type="email")
+        div(class="_ds-form text" v-if="step.attributes.inputType == 'month'")
+          input(name="value" required type="month")
+        div(class="_ds-form text" v-if="step.attributes.inputType == 'number'")
+          input(name="value" required type="number")
+        div(class="_ds-form text" v-if="step.attributes.inputType == 'text'")
+          input(name="value" required type="text" v-model.lazy.trim="value")
+        button(:disabled="step.execution" class="ds-link" type="submit")
+          div(class="_ds-link body")
+            div(class="_ds-link title") Next
+            //-div(class="_ds-link text") From PHP to Node.js, I'm building light &amp; modular backend with Docker.
+          div(class="_ds-link action-icon")
+            i(class="bi bi-chevron-right")
+  div(id='app')
+    div(class="row")
+      div(class="col-lg-4 offset-lg-4")
+        div(v-show='step == 0')
+          section(class="ds-section grey" v-if='!currentStep')
+            div(class="_ds-section text") Routine éxécuté en 
+          button(class="ds-link" type="submit" @click="nextStep")
+            div(class="_ds-link body")
+              div(class="_ds-link title") Start
+              //-div(class="_ds-link text") From PHP to Node.js, I'm building light &amp; modular backend with Docker.
+            div(class="_ds-link action-icon")
+              i(class="bi bi-chevron-right")
+        step(:step='step' v-for='step in steps' @next-step="nextStep")
+block script
+  -
+    const steps = routineExecution.attributes.routine.data.attributes.steps.data.map((step) => {
+      step.execution = routineExecution.attributes.stepExecutions.data.find((stepExecution) => stepExecution.attributes.step.data.id == step.id);
+      return step;
+    });
+  script.
+    const id = !{routineExecution.id};
+    const steps = !{JSON.stringify(steps)}
+  script(src='https://id.digitalleman.com/ID.js')
+  script(type='importmap').
+    {
+      "imports": {
+        "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
+      }
+    }
+  script(setup src='/routine-execution.js' type='module')
