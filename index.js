@@ -5,6 +5,7 @@ import express from 'express';
 import fr from './fr.js';
 import morgan from 'morgan';
 import pt from './pt.js';
+import { scheduleJob } from 'node-schedule';
 //import qs from 'qs';
 
 const app = express();
@@ -45,8 +46,8 @@ app.use('/:language(en|fr|pt)', (req, res, next) => {
   next();
 });
 
-app.get(/^\/(?!en|fr|pt)/, (req, res) => {
-  res.redirect(`/${req.acceptsLanguages('en', 'fr', 'pt') || 'en'}${req.originalUrl.replace(/\/$/, '')}`);
+app.get(/^\/(?!fr)/, (req, res) => {
+  res.redirect(`/${req.acceptsLanguages('fr') || 'fr'}${req.originalUrl.replace(/\/$/, '')}`);
 });
 
 app.get('/:language(fr)', (req, res) => {
@@ -296,6 +297,59 @@ app.post('/:language(en|fr|pt)/sign-up', (req, res) => {
     res.redirect(`/${res.locals.language}/sign-up`);
   });
 });*/
+
+scheduleJob('0 * * * *', (date) => {
+  axios.get('https://api.digitalleman.com/v2/routines?locale=fr&pagination[pageSize]=100&populate=user', {
+    headers: {
+      'authorization': `Bearer ${process.env.TOKEN}`
+    }
+  })
+  .then((response) => {
+    response.data.data.forEach((routine) => {
+      let trigger = false;
+      if (routine.attributes.reminderHour === date.getHours()) {
+        switch (routine.attributes.reminderFrequency) {
+          case 'daily':
+            trigger = true;
+            break;
+          case 'monthly':
+            if (routine.attributes.reminderDay === date.getDate()) trigger = true;
+            break;
+          case 'weekly':
+            if (routine.attributes.reminderWeekday === date.getDay()) trigger = true;
+            break;
+        }
+      }
+      if (trigger) {
+        axios.post('https://api.sendgrid.com/v3/mail/send', {
+          personalizations: [{
+            dynamic_template_data: {
+              message: routine.attributes.description,
+              subject: routine.attributes.title
+            },
+            to: [{
+              email: routine.attributes.user.data.attributes.email
+            }],
+          }],
+          from: {
+            email: 'email@digitalleman.com',
+            name: 'Digital Léman'
+          },
+          reply_to: {
+            email: 'contact@quentinburgniard.com'
+          },
+          template_id: 'd-4b516a020f0e4af982393dd9542c831a'
+        },
+        {
+          headers: {
+            'authorization': `Bearer ${process.env.SENDGRID_TOKEN}`,
+            'content-type': 'application/json'
+          }
+        });
+      }
+    });
+  });
+});
 
 app.use((req, res) => {
   res.status(404);
