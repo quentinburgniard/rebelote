@@ -1,0 +1,19 @@
+extends layout.pug
+
+block content
+  div(class="row")
+    div(class="col-lg-4 offset-lg-4")
+      div(class='ds-title')
+        h1(class="_ds-title title")= routine.attributes.title
+      a(alt=__('Execute') class="ds-link" href=`/${language}/${routine.id}/execute`)
+        div(class="_ds-link body")
+          div(class="_ds-link title")= __('Execute')
+        div(class="_ds-link action-icon")
+          i(class="bi bi-box-arrow-in-right")
+      a(alt=__('All routines') class="ds-link-small" href="/")
+        div(class="_ds-link body")
+          div(class="_ds-link-small title")= __('All routines')
+        div(class="_ds-link action-icon")
+          i(class="bi bi-chevron-right")
+
+block script

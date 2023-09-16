@@ -69,6 +69,28 @@ app.get('/:language(fr)', (req, res) => {
   });
 });
 
+app.get('/:language(fr)/:routineID', (req, res) => {
+  axios.get(`https://api.digitalleman.com/v2/routines/${req.params.routineID}`, {
+    headers: {
+      'authorization': `Bearer ${res.locals.token}`
+    }
+  })
+  .then((response) => {
+    res.render('routine', {
+      routine: response.data.data
+    });
+  })
+  .catch((error) => {
+    console.log(error.response.data);
+    if (/401|403/.test(error.response.status)) {
+      res.redirect(`https://id.digitalleman.com?l=${req.params.language}&r=rebelote.digitalleman.com%2F${req.params.language}`);
+    } else {
+      res.status(error.response.status || 500);
+      res.send();
+    }
+  });
+});
+
 app.get('/:language(fr)/:routineID/execute', (req, res) => {
   axios.post(`https://api.digitalleman.com/v2/routine-executions`, {
     data: {
