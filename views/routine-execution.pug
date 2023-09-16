@@ -43,7 +43,9 @@ block script
       return step;
     });
   script.
-    const id = !{routineExecution.id};
+    const executionID = !{routineExecution.id};
+    const language = '!{language}';
+    const routineID = !{routineExecution.attributes.routine.data.id};
     const steps = !{JSON.stringify(steps)}
   script(src='https://id.digitalleman.com/ID.js')
   script(type='importmap').

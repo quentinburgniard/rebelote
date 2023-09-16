@@ -67,12 +67,3 @@ html(lang=language)
       div(class="row")
   script(src="https://ds.digitalleman.com/index.js")
   block script
-  each message in messages
-    script.
-      (() => {
-        if (window.ds && ds.ready) {
-          ds.newToast('#{message}');
-        } else {
-          document.addEventListener('ds.ready', () => { ds.newToast('#{message}') }, { once: true });
-        }
-      })();
