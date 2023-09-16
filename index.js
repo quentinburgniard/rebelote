@@ -4,8 +4,9 @@ import cookieParser from 'cookie-parser';
 import express from 'express';
 import fr from './fr.js';
 import morgan from 'morgan';
-import pt from './pt.js';
 import { scheduleJob } from 'node-schedule';
+import pt from './pt.js';
+
 //import qs from 'qs';
 
 const app = express();
@@ -24,9 +25,6 @@ app.use(morgan(':method :url :status'));
 
 app.use((req, res, next) => {
   res.locals.token = req.cookies.t || null;
-  res.locals.messages = req.cookies.m ? JSON.parse(req.cookies.m) : [];
-  res.clearCookie('m', { domain: 'digitalleman.com', path: '/' });
-  res.locals.redirect = req.query.r || null;
   next();
 });
 
@@ -63,7 +61,7 @@ app.get('/:language(fr)', (req, res) => {
   })
   .catch((error) => {
     if (/401|403/.test(error.response.status)) {
-      res.redirect(`https://id.digitalleman.com?l=${req.params.language}&r=cv.digitalleman.com%2F${req.params.language}`);
+      res.redirect(`https://id.digitalleman.com?l=${req.params.language}&r=rebelote.digitalleman.com%2F${req.params.language}`);
     } else {
       res.status(error.response.status || 500);
       res.send();
@@ -88,7 +86,7 @@ app.get('/:language(fr)/:routineID/execute', (req, res) => {
   })
   .catch((error) => {
     if (/401|403/.test(error.response.status)) {
-      res.redirect(`https://id.digitalleman.com?l=${req.params.language}&r=cv.digitalleman.com%2F${req.params.language}`);
+      res.redirect(`https://id.digitalleman.com?l=${req.params.language}&r=rebelote.digitalleman.com%2F${req.params.language}`);
     } else {
       res.status(error.response.status || 500);
       res.send();
@@ -108,9 +106,8 @@ app.get('/:language(fr)/:routineID/execution/:executionID', (req, res) => {
     });
   })
   .catch((error) => {
-    console.log(error.response);
     if (/401|403/.test(error.response.status)) {
-      res.redirect(`https://id.digitalleman.com?l=${req.params.language}&r=cv.digitalleman.com%2F${req.params.language}`);
+      res.redirect(`https://id.digitalleman.com?l=${req.params.language}&r=rebelote.digitalleman.com%2F${req.params.language}`);
     } else {
       res.status(error.response.status || 500);
       res.send();
@@ -321,30 +318,42 @@ scheduleJob('0 * * * *', (date) => {
         }
       }
       if (trigger) {
-        axios.post('https://api.sendgrid.com/v3/mail/send', {
-          personalizations: [{
-            dynamic_template_data: {
-              message: routine.attributes.description,
-              subject: routine.attributes.title
-            },
-            to: [{
-              email: routine.attributes.user.data.attributes.email
-            }],
-          }],
-          from: {
-            email: 'email@digitalleman.com',
-            name: 'Digital Léman'
-          },
-          reply_to: {
-            email: 'contact@quentinburgniard.com'
-          },
-          template_id: 'd-4b516a020f0e4af982393dd9542c831a'
+        axios.post(`https://api.digitalleman.com/v2/routine-executions`, {
+          data: {
+            routine: routine.id
+          }
         },
         {
           headers: {
-            'authorization': `Bearer ${process.env.SENDGRID_TOKEN}`,
-            'content-type': 'application/json'
+            'authorization': `Bearer ${process.env.TOKEN}`
           }
+        })
+        .then((response) => {
+          axios.post('https://api.sendgrid.com/v3/mail/send', {
+            personalizations: [{
+              dynamic_template_data: {
+                message: `https://rebelote.digitalleman.com/fr/1/execution/${response.data.data.id}`,
+                subject: routine.attributes.title
+              },
+              to: [{
+                email: routine.attributes.user.data.attributes.email
+              }],
+            }],
+            from: {
+              email: 'email@digitalleman.com',
+              name: 'Digital Léman'
+            },
+            reply_to: {
+              email: 'contact@quentinburgniard.com'
+            },
+            template_id: 'd-4b516a020f0e4af982393dd9542c831a'
+          },
+          {
+            headers: {
+              'authorization': `Bearer ${process.env.SENDGRID_TOKEN}`,
+              'content-type': 'application/json'
+            }
+          });
         });
       }
     });
@@ -357,7 +366,6 @@ app.use((req, res) => {
 });
 
 app.use((err, req, res, next) => {
-  console.log(err);
   res.status(500);
   res.send();
 });
