@@ -83,7 +83,7 @@ app.get('/:language(fr)/:routineID', (req, res) => {
   .catch((error) => {
     console.log(error.response.data);
     if (/401|403/.test(error.response.status)) {
-      res.redirect(`https://id.digitalleman.com?l=${req.params.language}&r=rebelote.digitalleman.com%2F${req.params.language}`);
+      res.redirect(`https://id.digitalleman.com?l=${req.params.language}&r=rebelote.digitalleman.com%2F${req.params.language}%2F${req.params.routineID}`);
     } else {
       res.status(error.response.status || 500);
       res.send();
@@ -108,7 +108,7 @@ app.get('/:language(fr)/:routineID/execute', (req, res) => {
   })
   .catch((error) => {
     if (/401|403/.test(error.response.status)) {
-      res.redirect(`https://id.digitalleman.com?l=${req.params.language}&r=rebelote.digitalleman.com%2F${req.params.language}`);
+      res.redirect(`https://id.digitalleman.com?l=${req.params.language}&r=rebelote.digitalleman.com%2F${req.params.language}%2F${req.params.routineID}%2Fexecute`);
     } else {
       res.status(error.response.status || 500);
       res.send();
@@ -129,7 +129,7 @@ app.get('/:language(fr)/:routineID/execution/:executionID', (req, res) => {
   })
   .catch((error) => {
     if (/401|403/.test(error.response.status)) {
-      res.redirect(`https://id.digitalleman.com?l=${req.params.language}&r=rebelote.digitalleman.com%2F${req.params.language}`);
+      res.redirect(`https://id.digitalleman.com?l=${req.params.language}&r=rebelote.digitalleman.com%2F${req.params.language}%2F${req.params.routineID}%2Fexecution%2F${req.params.executionID}`);
     } else {
       res.status(error.response.status || 500);
       res.send();
