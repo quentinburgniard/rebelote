@@ -337,6 +337,9 @@ scheduleJob('0 * * * *', (date) => {
           case 'weekly':
             if (routine.attributes.reminderWeekday === date.getDay()) trigger = true;
             break;
+          case 'yearly':
+            if (routine.attributes.reminderMonth === date.getMonth() && routine.attributes.reminderDay === date.getDate()) trigger = true;
+            break;
         }
       }
       if (trigger) {
