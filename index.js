@@ -70,7 +70,7 @@ app.get('/:language(fr)', (req, res) => {
 });
 
 app.get('/:language(fr)/:routineID', (req, res) => {
-  axios.get(`https://api.digitalleman.com/v2/routines/${req.params.routineID}`, {
+  axios.get(`https://api.digitalleman.com/v2/routines/${req.params.routineID}?populate[0]=executions&populate[1]=executions.stepExecutions&populate[2]=steps`, {
     headers: {
       'authorization': `Bearer ${res.locals.token}`
     }
@@ -92,7 +92,7 @@ app.get('/:language(fr)/:routineID', (req, res) => {
 });
 
 app.get('/:language(fr)/:routineID/execute', (req, res) => {
-  axios.post(`https://api.digitalleman.com/v2/routine-executions`, {
+  axios.post('https://api.digitalleman.com/v2/routine-executions', {
     data: {
       locale: req.params.language,
       routine: req.params.routineID

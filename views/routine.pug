@@ -5,15 +5,25 @@ block content
     div(class="col-lg-4 offset-lg-4")
       div(class='ds-title')
         h1(class="_ds-title title")= routine.attributes.title
+      div(class="ds-text")= routine.attributes.executions.data.length
       a(alt=__('Execute') class="ds-link" href=`/${language}/${routine.id}/execute`)
         div(class="_ds-link body")
           div(class="_ds-link title")= __('Execute')
         div(class="_ds-link action-icon")
           i(class="bi bi-box-arrow-in-right")
-      a(alt=__('All routines') class="ds-link-small" href="/")
+      a(alt=__('All routines') class="ds-link-small" href=`/${language}`)
         div(class="_ds-link body")
           div(class="_ds-link-small title")= __('All routines')
         div(class="_ds-link action-icon")
           i(class="bi bi-chevron-right")
+  div(style="white-space: pre")= JSON.stringify(routine, null, 2)
 
 block script
+  script(src='https://id.digitalleman.com/ID.js')
+  script(type='importmap').
+    {
+      "imports": {
+        "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
+      }
+    }
+  script(setup src='/routine.js' type='module')

@@ -36,6 +36,7 @@ block content
             div(class="_ds-link action-icon")
               i(class="bi bi-chevron-right")
         step(:step='step' v-for='step in steps' @next-step="nextStep")
+        
 block script
   -
     const steps = routineExecution.attributes.routine.data.attributes.steps.data.map((step) => {
