@@ -5,10 +5,10 @@ block content
     div(class="col-lg-4 offset-lg-4")
       div(class='ds-title')
         h1(class="_ds-title title")= routine.attributes.title
-      each step in routine.attributes.steps.data
+      each step, index in routine.attributes.steps.data
         a(class="ds-link-small" alt="Professional Background" href="/")
           div(class="_ds-link body")
-            div(class="_ds-link-small title")= step.attributes.title
+            div(class="_ds-link-small title")= `${index + 1}. ${step.attributes.title}`
           div(class="_ds-link action-icon")
             i(class="bi bi-chevron-right")
       div(class='ds-title')
