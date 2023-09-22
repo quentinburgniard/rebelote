@@ -37,6 +37,24 @@ const app = createApp({
   computed: {
     currentStep() {
       return this.steps.find((step) => !step.execution);
+    },
+    executedSteps() {
+      return this.steps.filter((step) => step.execution);
+    },
+    executionTime() {
+      let end = new Date(this.lastStep.execution.attributes.createdAt);
+      let start = new Date(this.firstStep.execution.attributes.createdAt);
+      let difference = end - start;
+      return {
+        minutes: Math.floor(difference / 60000),
+        seconds: Math.round(difference / 1000)
+      };
+    },
+    firstStep() {
+      return this.executedSteps.reduce((firstStep, step) => firstStep.execution.attributes.createdAt < step.execution.attributes.createdAt ? firstStep : step);
+    },
+    lastStep() {
+      return this.executedSteps.reduce((lastStep, step) => lastStep.execution.attributes.createdAt > step.execution.attributes.createdAt ? lastStep : step);
     }
   },
   data() {
@@ -60,7 +78,7 @@ const app = createApp({
         if (this.currentStep) {
           window.location.hash = `#${this.currentStep.id}`;
         } else {
-          window.location.replace(`https://rebelote.digitalleman.com/fr/${routineID}`);
+          window.location.hash = `#end`;
         }
       }).catch(error => {
         console.log(error);
@@ -78,7 +96,8 @@ const app = createApp({
       if (step) {
         if (window.location.hash != `#${step}`) window.location.hash = `#${step}`;
       } else {
-        window.location.replace(`https://rebelote.digitalleman.com/fr/${routineID}`);
+        window.location.hash = `#end`;
+        step = 'end';
       }
       return step;
     }

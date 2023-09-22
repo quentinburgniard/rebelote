@@ -19,22 +19,25 @@ block content
           input(name="value" required type="text" v-model.lazy.trim="value")
         button(:disabled="step.execution" class="ds-link" type="submit")
           div(class="_ds-link body")
-            div(class="_ds-link title") Next
+            div(class="_ds-link title")= __('Étape suivante')
             //-div(class="_ds-link text") From PHP to Node.js, I'm building light &amp; modular backend with Docker.
           div(class="_ds-link action-icon")
             i(class="bi bi-chevron-right")
-  div(id='app')
+  div(id='app' v-cloak)
     div(class="row")
       div(class="col-lg-4 offset-lg-4")
-        div(v-show='step == 0')
-          section(class="ds-section grey" v-if='!currentStep')
-            div(class="_ds-section text") Routine éxécuté en 
-          button(class="ds-link" type="submit" @click="nextStep")
-            div(class="_ds-link body")
-              div(class="_ds-link title") Start
-              //-div(class="_ds-link text") From PHP to Node.js, I'm building light &amp; modular backend with Docker.
-            div(class="_ds-link action-icon")
-              i(class="bi bi-chevron-right")
+        div(v-if='step == "end"')
+          section(class="ds-section grey")
+            div(class="_ds-section title" v-if="executionTime.minutes").
+              #{__('Routine exécutée en {{ executionTime.minutes }} minutes et {{ executionTime.seconds }} secondes')}
+            div(class="_ds-section title" v-else).
+              #{__('Routine exécutée en {{ executionTime.seconds }} secondes')}
+            div(class="_ds-section text")
+              div(v-for="step in executedSteps")
+                div(v-if="step.execution.attributes.value")
+                  b {{ step.attributes.title }}
+                  br
+                  | {{ step.execution.attributes.value }} 
         step(:step='step' v-for='step in steps' @next-step="nextStep")
         
 block script
