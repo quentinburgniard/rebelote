@@ -29,9 +29,9 @@ block content
         div(v-if='step == "end"')
           section(class="ds-section grey")
             div(class="_ds-section title" v-if="executionTime.minutes").
-              #{__('Routine exécutée en {{ executionTime.minutes }} minutes et {{ executionTime.seconds }} secondes')}
+              #{__('Routine exécutée en {{ executionTime.minutes }} minute{{ executionTime.minutes == 1 ? "": "s" }} et {{ executionTime.seconds }} seconde{{ executionTime.seconds == 1 ? "": "s" }}')}
             div(class="_ds-section title" v-else).
-              #{__('Routine exécutée en {{ executionTime.seconds }} secondes')}
+              #{__('Routine exécutée en {{ executionTime.seconds }} seconde{{ executionTime.seconds == 1 ? "": "s" }}')}
             div(class="_ds-section text")
               div(v-for="step in executedSteps")
                 div(v-if="step.execution.attributes.value")

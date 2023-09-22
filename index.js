@@ -70,7 +70,7 @@ app.get('/:language(fr)', (req, res) => {
 });
 
 app.get('/:language(fr)/:routineID', (req, res) => {
-  axios.get(`https://api.digitalleman.com/v2/routines/${req.params.routineID}?populate[0]=executions&populate[1]=executions.stepExecutions&populate[2]=steps`, {
+  axios.get(`https://api.digitalleman.com/v2/routines/${req.params.routineID}?populate[0]=executions&populate[1]=executions.stepExecutions&populate[2]=executions.stepExecutions.step&populate[3]=steps`, {
     headers: {
       'authorization': `Bearer ${res.locals.token}`
     }
@@ -358,7 +358,7 @@ scheduleJob('0 * * * *', (date) => {
             personalizations: [{
               dynamic_template_data: {
                 message: `https://rebelote.digitalleman.com/fr/1/execution/${response.data.data.id}`,
-                subject: routine.attributes.title
+                subject: `🔔 ${routine.attributes.title}`
               },
               to: [{
                 email: routine.attributes.user.data.attributes.email
@@ -366,7 +366,7 @@ scheduleJob('0 * * * *', (date) => {
             }],
             from: {
               email: 'email@digitalleman.com',
-              name: 'Digital Léman'
+              name: 'Rebelote'
             },
             reply_to: {
               email: 'contact@quentinburgniard.com'
