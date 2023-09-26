@@ -4,21 +4,29 @@ block content
   div(class="row")
     div(class="col-lg-4 offset-lg-4")
       div(class='ds-title')
-        h1(class="_ds-title title")= routine.attributes.title
-      each step, index in routine.attributes.steps.data
-        a(class="ds-link-small" alt="Professional Background" href="/")
+        h1(class="_ds-title title")= routine.title
+      each step, index in routine.steps
+        a(class="ds-link-small" alt="Professional Background" href=`#${step.id}`)
           div(class="_ds-link body")
-            div(class="_ds-link-small title")= `${index + 1}. ${step.attributes.title}`
+            div(class="_ds-link-small title")= `${index + 1}. ${step.title}`
           div(class="_ds-link action-icon")
             i(class="bi bi-chevron-right")
       div(class='ds-title')
-        h2(class="_ds-title title")= __('Exécutions inachevées')
-      div(class='ds-title')
-        h2(class="_ds-title title")= __('Exécutions réussies')
-      each execution in routine.attributes.executions.data
+        h2(class="_ds-title title")= `${__('Exécutions inachevées')} (${routine.uncompletedExecutions.length})`
+      each execution in routine.uncompletedExecutions
         a(class="ds-link-small" alt="Professional Background" href=href=`/${language}/${routine.id}/execution/${execution.id}`)
           div(class="_ds-link body")
-            div(class="_ds-link-small title")= execution.attributes.createdAt
+            div(class="_ds-link-small title")= execution.formattedCreatedAt(language)
+            //= JSON.stringify(execution.steps)
+          div(class="_ds-link action-icon")
+            i(class="bi bi-chevron-right")
+      div(class='ds-title')
+        h2(class="_ds-title title")= `${__('Exécutions réussies')} (${routine.uncompletedExecutions.length})`
+      each execution in routine.completedExecutions
+        a(class="ds-link-small" alt="Professional Background" href=href=`/${language}/${routine.id}/execution/${execution.id}`)
+          div(class="_ds-link body")
+            div(class="_ds-link-small title")= execution.formattedCreatedAt(language)
+            //= JSON.stringify(execution.steps)
           div(class="_ds-link action-icon")
             i(class="bi bi-chevron-right")
       a(alt=__('Execute') class="ds-link" href=`/${language}/${routine.id}/execute`)
@@ -34,10 +42,10 @@ block content
 
 block script
   script(src='https://id.digitalleman.com/ID.js')
-  script(type='importmap').
+  //-script(type='importmap').
     {
       "imports": {
         "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
       }
     }
-  //script(setup src='/routine.js' type='module')
+  //-script(setup src='/routine.js' type='module')

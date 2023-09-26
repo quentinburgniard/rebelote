@@ -6,6 +6,7 @@ import fr from './fr.js';
 import morgan from 'morgan';
 import { scheduleJob } from 'node-schedule';
 import pt from './pt.js';
+import Routine from './Routine.js';
 
 //import qs from 'qs';
 
@@ -69,25 +70,15 @@ app.get('/:language(fr)', (req, res) => {
   });
 });
 
-app.get('/:language(fr)/:routineID', (req, res) => {
-  axios.get(`https://api.digitalleman.com/v2/routines/${req.params.routineID}?populate[0]=executions&populate[1]=executions.stepExecutions&populate[2]=executions.stepExecutions.step&populate[3]=steps`, {
-    headers: {
-      'authorization': `Bearer ${res.locals.token}`
-    }
-  })
-  .then((response) => {
-    res.render('routine', {
-      routine: response.data.data
-    });
-  })
-  .catch((error) => {
-    console.log(error.response.data);
-    if (/401|403/.test(error.response.status)) {
-      res.redirect(`https://id.digitalleman.com?l=${req.params.language}&r=rebelote.digitalleman.com%2F${req.params.language}%2F${req.params.routineID}`);
-    } else {
-      res.status(error.response.status || 500);
-      res.send();
-    }
+app.get('/:language(fr)/:routineID', async (req, res) => {
+  const routine = new Routine({
+    storage: 'strapi',
+    token: res.locals.token
+  });
+  await routine.get(req.params.routineID);
+  //console.log(routine);
+  res.render('routine', {
+    routine: routine
   });
 });
 
