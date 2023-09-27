@@ -9,10 +9,9 @@ block content
         a(class="ds-link-small" alt="Professional Background" href=`#${step.id}`)
           div(class="_ds-link body")
             div(class="_ds-link-small title")= `${index + 1}. ${step.title}`
-          div(class="_ds-link action-icon")
-            i(class="bi bi-chevron-right")
-      div(class='ds-title')
-        h2(class="_ds-title title")= `${__('Exécutions inachevées')} (${routine.uncompletedExecutions.length})`
+      if routine.uncompletedExecutions.length
+        div(class='ds-title')
+          h2(class="_ds-title title")= `${__('En cours')} (${routine.uncompletedExecutions.length})`
       each execution in routine.uncompletedExecutions
         a(class="ds-link-small" alt="Professional Background" href=href=`/${language}/${routine.id}/execution/${execution.id}`)
           div(class="_ds-link body")
@@ -20,32 +19,46 @@ block content
             //= JSON.stringify(execution.steps)
           div(class="_ds-link action-icon")
             i(class="bi bi-chevron-right")
-      div(class='ds-title')
-        h2(class="_ds-title title")= `${__('Exécutions réussies')} (${routine.uncompletedExecutions.length})`
+      if routine.completedExecutions.length
+        div(class='ds-title')
+          h2(class="_ds-title title")= `${__('Fait')} (${routine.completedExecutions.length})`
       each execution in routine.completedExecutions
         a(class="ds-link-small" alt="Professional Background" href=href=`/${language}/${routine.id}/execution/${execution.id}`)
           div(class="_ds-link body")
             div(class="_ds-link-small title")= execution.formattedCreatedAt(language)
-            //= JSON.stringify(execution.steps)
           div(class="_ds-link action-icon")
             i(class="bi bi-chevron-right")
       a(alt=__('Execute') class="ds-link" href=`/${language}/${routine.id}/execute`)
         div(class="_ds-link body")
           div(class="_ds-link title")= __('Nouvelle exécution')
         div(class="_ds-link action-icon")
-          i(class="bi bi-box-arrow-in-right")
+          i(class="bi bi-plus-lg")
+      if routine.completedExecutions.length
+        div(class='ds-title')
+          h2(class="_ds-title title")= __('Stats')
+        canvas(id="myChart")
       a(alt=__('All routines') class="ds-link-small" href=`/${language}`)
         div(class="_ds-link body")
           div(class="_ds-link-small title")= __('All routines')
-        div(class="_ds-link action-icon")
-          i(class="bi bi-chevron-right")
 
 block script
+  -
+    const stats = [
+      routine.completedExecutions.map((execution) => {
+        return {
+          x: execution.createdAt,
+          y: execution.minutesElapsed
+        }
+      })
+    ]
+  script.
+    const stats = !{JSON.stringify(stats)}
+    const routine = !{JSON.stringify(routine)}
   script(src='https://id.digitalleman.com/ID.js')
-  //-script(type='importmap').
+  script(type='importmap').
     {
       "imports": {
-        "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
+        "chart.js": "https://cdn.jsdelivr.net/npm/chart.js@4/+esm"
       }
     }
-  //-script(setup src='/routine.js' type='module')
+  script(setup src='/routine.js' type='module')
