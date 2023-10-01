@@ -113,8 +113,7 @@ scheduleJob('0 * * * *', (date) => {
     headers: {
       'authorization': `Bearer ${process.env.TOKEN}`
     }
-  })
-  .then((response) => {
+  }).then((response) => {
     response.data.data.forEach((routine) => {
       let trigger = false;
       if (routine.attributes.reminderHour === date.getHours()) {

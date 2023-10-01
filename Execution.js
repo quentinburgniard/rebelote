@@ -21,11 +21,11 @@ class Execution {
   }
 
   get #firstStep() {
-    return this.steps.reduce((firstStep, step) => firstStep.createdAt < step.createdAt ? firstStep : step);
+    return this.steps.reduce((firstStep, step) => firstStep.createdAt < step.createdAt ? firstStep : step, null);
   }
 
   get #lastStep() {
-    return this.steps.reduce((lastStep, step) => lastStep.createdAt > step.createdAt ? lastStep : step);
+    return this.steps.reduce((lastStep, step) => lastStep.createdAt > step.createdAt ? lastStep : step, null);
   }
 }
 
