@@ -1,2 +1,0 @@
-# Rebelote
-Routine & reminder app
