@@ -44,21 +44,22 @@ const app = createApp({
     executionTime() {
       let executionTime = null;
       if (this.lastStep || this.firstStep) {
-        let end = new Date(this.lastStep.execution.attributes.createdAt);
-        let start = new Date(this.firstStep.execution.attributes.createdAt);
-        let difference = end - start;
+        const end = new Date(this.lastStep.execution.attributes.createdAt);
+        const start = new Date(this.firstStep.execution.attributes.createdAt);
+        const difference = end - start;
+        const minutes = Math.floor(difference / 60000)
         executionTime = {
-          minutes: Math.floor(difference / 60000),
-          seconds: Math.round(difference / 1000)
+          minutes: minutes,
+          seconds: Math.round(difference / 1000) - minutes * 60
         };
       }
       return executionTime;
     },
     firstStep() {
-      return this.executedSteps.reduce((firstStep, step) => firstStep.execution.attributes.createdAt < step.execution.attributes.createdAt ? firstStep : step, null);
+      return this.executedSteps ? this.executedSteps.reduce((firstStep, step) => firstStep.execution.attributes.createdAt < step.execution.attributes.createdAt ? firstStep : step) : null;
     },
     lastStep() {
-      return this.executedSteps.reduce((lastStep, step) => lastStep.execution.attributes.createdAt > step.execution.attributes.createdAt ? lastStep : step, null);
+      return this.executedSteps ? this.executedSteps.reduce((lastStep, step) => lastStep.execution.attributes.createdAt > step.execution.attributes.createdAt ? lastStep : step) : null;
     }
   },
   data() {
