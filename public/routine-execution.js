@@ -15,7 +15,7 @@ const Step = {
           data: {
             execution: executionID,
             step: this.step.id,
-            value: this.value,
+            value: `${this.value}`
           }
         }),
         headers: {
