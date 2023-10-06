@@ -62,7 +62,11 @@ class Routine {
   }
 
   get completedExecutions() {
-    return this.executions.filter((execution) => execution.steps.length == this.steps.length);
+    let completedExecutions = [];
+    if (this.steps.length) {
+      completedExecutions = this.executions.filter((execution) => execution.steps.length == this.steps.length);
+    }
+    return completedExecutions;
   }
 
   get uncompletedExecutions() {

@@ -26,7 +26,7 @@ block content
   div(id='app' v-cloak)
     div(class="row")
       div(class="col-lg-4 offset-lg-4")
-        div(v-if='step == "end"')
+        div(v-if='step == "end" && executionTime')
           section(class="ds-section grey")
             div(class="_ds-section title" v-if="executionTime.minutes").
               #{__('Routine exécutée en {{ executionTime.minutes }} minute{{ executionTime.minutes == 1 ? "": "s" }} et {{ executionTime.seconds }} seconde{{ executionTime.seconds == 1 ? "": "s" }}')}

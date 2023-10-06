@@ -42,19 +42,23 @@ const app = createApp({
       return this.steps.filter((step) => step.execution);
     },
     executionTime() {
-      let end = new Date(this.lastStep.execution.attributes.createdAt);
-      let start = new Date(this.firstStep.execution.attributes.createdAt);
-      let difference = end - start;
-      return {
-        minutes: Math.floor(difference / 60000),
-        seconds: Math.round(difference / 1000)
-      };
+      let executionTime = null;
+      if (this.lastStep || this.firstStep) {
+        let end = new Date(this.lastStep.execution.attributes.createdAt);
+        let start = new Date(this.firstStep.execution.attributes.createdAt);
+        let difference = end - start;
+        executionTime = {
+          minutes: Math.floor(difference / 60000),
+          seconds: Math.round(difference / 1000)
+        };
+      }
+      return executionTime;
     },
     firstStep() {
-      return this.executedSteps.reduce((firstStep, step) => firstStep.execution.attributes.createdAt < step.execution.attributes.createdAt ? firstStep : step);
+      return this.executedSteps.reduce((firstStep, step) => firstStep.execution.attributes.createdAt < step.execution.attributes.createdAt ? firstStep : step, null);
     },
     lastStep() {
-      return this.executedSteps.reduce((lastStep, step) => lastStep.execution.attributes.createdAt > step.execution.attributes.createdAt ? lastStep : step);
+      return this.executedSteps.reduce((lastStep, step) => lastStep.execution.attributes.createdAt > step.execution.attributes.createdAt ? lastStep : step, null);
     }
   },
   data() {
