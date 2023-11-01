@@ -146,7 +146,7 @@ scheduleJob('0 * * * *', (date) => {
           axios.post('https://api.sendgrid.com/v3/mail/send', {
             personalizations: [{
               dynamic_template_data: {
-                message: `https://rebelote.digitalleman.com/fr/1/execution/${response.data.data.id}`,
+                message: `https://rebelote.digitalleman.com/fr/${routine.id}/execution/${response.data.data.id}`,
                 subject: `🔔 ${routine.attributes.title}`
               },
               to: [{
