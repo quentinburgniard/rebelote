@@ -93,7 +93,7 @@ app.get('/:language(fr)/:routineID/execute', (req, res) => {
   });
 });
 
-app.get('/:language(fr)/:routineID/execution/:executionID', (req, res) => {
+app.get('/:language(fr)/:routineID/execution/:executionID', (req, res, next) => {
   axios.get(`https://api.digitalleman.com/v2/routine-executions/${req.params.executionID}?populate[0]=routine&populate[1]=routine.steps&populate[2]=stepExecutions&populate[3]=stepExecutions.step`, {
     headers: {
       'authorization': `Bearer ${res.locals.token}`
